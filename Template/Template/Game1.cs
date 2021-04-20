@@ -11,10 +11,29 @@ namespace Template
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
+
+        public static int w;
+        public static int h;
+
+        private Texture2D background;
+        private Vector2 backgroundpos = new Vector2(0, 0);
+
+        private Texture2D spelare;
+        private Vector2 spelarepos = new Vector2(100, 500);
+
+        private Texture2D hinder;
+        private Vector2 hinderpos = new Vector2(700, 100);
+
+
+
+
+
         //KOmentar
         public Game1()
         {
-            graphics = new GraphicsDeviceManager(this);
+            graphics = new GraphicsDeviceManager(this); //skärmstorlek på spelet
+            h = graphics.PreferredBackBufferHeight = 1080;
+            w = graphics.PreferredBackBufferWidth = 1920;
             Content.RootDirectory = "Content";
         }
 
@@ -37,10 +56,13 @@ namespace Template
         /// </summary>
         protected override void LoadContent()
         {
-            // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            // TODO: use this.Content to load your game content here 
+            background = Content.Load<Texture2D>("spelplan"); // Bakgrund till spelet
+
+            spelare = Content.Load<Texture2D>("spelare");
+        
+            hinder = Content.Load<Texture2D>("hinder");
         }
 
         /// <summary>
@@ -61,11 +83,27 @@ namespace Template
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
-
-            // TODO: Add your update logic here
-
+            {
+                if (Keyboard.GetState().IsKeyDown(Keys.W))
+                {
+                    spelarepos.Y -= 5;
+                }
+                if (Keyboard.GetState().IsKeyDown(Keys.S))
+                {
+                    spelarepos.Y += 5;
+                }
+                if (Keyboard.GetState().IsKeyDown(Keys.A))
+                {
+                    spelarepos.X -= 5;
+                }
+                if (Keyboard.GetState().IsKeyDown(Keys.D))
+                {
+                    spelarepos.X += 5;
+                }
+            }
             base.Update(gameTime);
         }
+      
 
         /// <summary>
         /// This is called when the game should draw itself.
@@ -73,10 +111,18 @@ namespace Template
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.Black);
 
-            // TODO: Add your drawing code here.
+            spriteBatch.Begin(); //skriver ut hur stor min bakgrund ska vara och skärmen och hur den ska se ut
+            Rectangle backgroundRec = new Rectangle();
+            backgroundRec.Location = backgroundpos.ToPoint();
+            backgroundRec.Size = new Point(w, h);
+            spriteBatch.Draw(background, backgroundRec, Color.White);
 
+            spriteBatch.Draw(spelare, spelarepos, Color.White);
+            spriteBatch.Draw(hinder, hinderpos, Color.White);
+
+            spriteBatch.End();
             base.Draw(gameTime);
         }
     }

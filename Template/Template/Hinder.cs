@@ -6,7 +6,12 @@ using System.Threading.Tasks;
 
 namespace Template
 {
-    class Hinder
+    class Hinder : Bas
     {
+        public Hinder(Texture2D texture, Vector2 position) : base(texture, position)
+        {
+
+        }
     }
 }
+
