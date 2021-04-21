@@ -1,6 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System;
+using System.Collections.Generic;
 
 namespace Template
 {
@@ -22,9 +24,17 @@ namespace Template
         private Vector2 spelarepos = new Vector2(100, 500);
 
         private Texture2D hinder;
-        private Vector2 hinderpos = new Vector2(700, 100);
+        private Vector2 hinderpos = new Vector2(450, 50);
+        private Vector2 hinderpos2 = new Vector2(750, 50);
+        private Vector2 hinderpos3 = new Vector2(1050, 50);
+        private Vector2 hinderpos4 = new Vector2(1350, 50);
 
+        float hinderposspeed = 0f;
+        float range = 36f;
+        float speed = 5f;
 
+        private List<Sprite> sprites;
+        private bool hasStarted = false;
 
 
 
@@ -58,11 +68,22 @@ namespace Template
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
+            Restart();
+        }
+        private void Restart()
+        {
+            spelare = Content.Load<Texture2D>("spelare");
+
+            sprites = new List<Sprite>()
+            {
+                new spelare(spelare)
+            }
+
             background = Content.Load<Texture2D>("spelplan"); // Bakgrund till spelet
 
-            spelare = Content.Load<Texture2D>("spelare");
-        
             hinder = Content.Load<Texture2D>("hinder");
+
+            hasStarted = false;
         }
 
         /// <summary>
@@ -83,27 +104,56 @@ namespace Template
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
+            if (Keyboard.GetState().IsKeyDown(Keys.Enter))
+                hasStarted = true;
+
+            if (!hasStarted)
+                return;
             {
                 if (Keyboard.GetState().IsKeyDown(Keys.W))
                 {
-                    spelarepos.Y -= 5;
+                    spelarepos.Y -= 6;
                 }
                 if (Keyboard.GetState().IsKeyDown(Keys.S))
                 {
-                    spelarepos.Y += 5;
+                    spelarepos.Y += 6;
                 }
                 if (Keyboard.GetState().IsKeyDown(Keys.A))
                 {
-                    spelarepos.X -= 5;
+                    spelarepos.X -= 6;
                 }
                 if (Keyboard.GetState().IsKeyDown(Keys.D))
                 {
-                    spelarepos.X += 5;
+                    spelarepos.X += 6;
                 }
             }
-            base.Update(gameTime);
+            hinderposspeed = range * (float)Math.Sin(speed * gameTime.TotalGameTime.TotalSeconds);
+            hinderpos.Y += hinderposspeed;
+            hinderpos2.Y += hinderposspeed;
+            hinderpos3.Y += hinderposspeed;
+            hinderpos4.Y += hinderposspeed;
+
+            for (int i = 0; i < .Count; i++)
+            {
+                var sprite = _sprites[i];
+
+                if (sprite.IsRemoved)
+                {
+                    _sprites.RemoveAt(i);
+                    i--;
+                }
+
+                if (sprite is spelare)
+                {
+                    var spelare = sprite as spelare;
+
+                    if (spelare.HasDied)
+                    {
+                        Restart();
+                    }
+                }
+            }
         }
-      
 
         /// <summary>
         /// This is called when the game should draw itself.
@@ -121,6 +171,9 @@ namespace Template
 
             spriteBatch.Draw(spelare, spelarepos, Color.White);
             spriteBatch.Draw(hinder, hinderpos, Color.White);
+            spriteBatch.Draw(hinder, hinderpos2, Color.White);
+            spriteBatch.Draw(hinder, hinderpos3, Color.White);
+            spriteBatch.Draw(hinder, hinderpos4, Color.White);
 
             spriteBatch.End();
             base.Draw(gameTime);
