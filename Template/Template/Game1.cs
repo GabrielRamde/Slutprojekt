@@ -20,23 +20,17 @@ namespace Template
         private Texture2D background;
         private Vector2 backgroundpos = new Vector2(0, 0);
 
-        private Texture2D spelare;
-        private Vector2 spelarepos = new Vector2(100, 500);
 
+        private Spelare spelare;
         private Texture2D hinder;
-        private Vector2 hinderpos = new Vector2(450, 50);
-        private Vector2 hinderpos2 = new Vector2(750, 50);
-        private Vector2 hinderpos3 = new Vector2(1050, 50);
-        private Vector2 hinderpos4 = new Vector2(1350, 50);
 
         float hinderposspeed = 0f;
         float range = 36f;
         float speed = 5f;
 
-        private List<Sprite> sprites;
         private bool hasStarted = false;
 
-
+        private List<Bas> gameObjects = new List<Bas>();
 
         //KOmentar
         public Game1()
@@ -68,20 +62,30 @@ namespace Template
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
+            Texture2D spelareTexture = Content.Load<Texture2D>("spelare");
+
+            background = Content.Load<Texture2D>("spelplan"); // Bakgrund till spelet
+
+            Texture2D hinderTexture = Content.Load<Texture2D>("hinder");
+
+            spelare = new Spelare(spelareTexture, new Vector2(100, 500), new Point(100, 100));
+
+            gameObjects.Add(new Hinder(hinderTexture, new Vector2(450, 50), new Point(100, 100)));
+            gameObjects.Add(new Hinder(hinderTexture, new Vector2(750, 50), new Point(100, 100)));
+            gameObjects.Add(new Hinder(hinderTexture, new Vector2(1050, 50), new Point(100, 100)));
+            gameObjects.Add(new Hinder(hinderTexture, new Vector2(1350, 50), new Point(100, 100)));
+
+            gameObjects.Add(spelare);
+
             Restart();
         }
         private void Restart()
         {
-            spelare = Content.Load<Texture2D>("spelare");
+            
 
-            sprites = new List<Sprite>()
-            {
-                new spelare(spelare)
-            }
+            
 
-            background = Content.Load<Texture2D>("spelplan"); // Bakgrund till spelet
-
-            hinder = Content.Load<Texture2D>("hinder");
+            
 
             hasStarted = false;
         }
@@ -107,58 +111,11 @@ namespace Template
             if (Keyboard.GetState().IsKeyDown(Keys.Enter))
                 hasStarted = true;
 
-            if (!hasStarted)
-                return;
+            foreach (Bas item in gameObjects)
             {
-                if (Keyboard.GetState().IsKeyDown(Keys.W))
-                {
-                    spelarepos.Y -= 6;
-                }
-                if (Keyboard.GetState().IsKeyDown(Keys.S))
-                {
-                    spelarepos.Y += 6;
-                }
-                if (Keyboard.GetState().IsKeyDown(Keys.A))
-                {
-                    spelarepos.X -= 6;
-                }
-                if (Keyboard.GetState().IsKeyDown(Keys.D))
-                {
-                    spelarepos.X += 6;
-                }
-            }
-            hinderposspeed = range * (float)Math.Sin(speed * gameTime.TotalGameTime.TotalSeconds);
-            hinderpos.Y += hinderposspeed;
-            hinderpos2.Y += hinderposspeed;
-            hinderpos3.Y += hinderposspeed;
-            hinderpos4.Y += hinderposspeed;
-
-            for (int i = 0; i < .Count; i++)
-            {
-                var sprite = _sprites[i];
-
-                if (sprite.IsRemoved)
-                {
-                    _sprites.RemoveAt(i);
-                    i--;
-                }
-
-                if (sprite is spelare)
-                {
-                    var spelare = sprite as spelare;
-
-                    if (spelare.HasDied)
-                    {
-                        Restart();
-                    }
-                }
+                item.Update(gameTime);
             }
         }
-
-        /// <summary>
-        /// This is called when the game should draw itself.
-        /// </summary>
-        /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.Black);
@@ -169,11 +126,10 @@ namespace Template
             backgroundRec.Size = new Point(w, h);
             spriteBatch.Draw(background, backgroundRec, Color.White);
 
-            spriteBatch.Draw(spelare, spelarepos, Color.White);
-            spriteBatch.Draw(hinder, hinderpos, Color.White);
-            spriteBatch.Draw(hinder, hinderpos2, Color.White);
-            spriteBatch.Draw(hinder, hinderpos3, Color.White);
-            spriteBatch.Draw(hinder, hinderpos4, Color.White);
+            foreach (Bas item in gameObjects)
+            {
+                item.Draw(spriteBatch);
+            }
 
             spriteBatch.End();
             base.Draw(gameTime);
