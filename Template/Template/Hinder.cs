@@ -13,11 +13,10 @@ namespace Template
         float range = 36f;
         float speed = 5f;
 
-        public Hinder(Texture2D texture, Vector2 position, Point size) : base(texture, position, size)
+        public Hinder(Texture2D texture, Vector2 position, Point size, Rectangle hitbox) : base(texture, position, size, hitbox)
         {
 
         }
-
         public override void Update(GameTime gameTime)
         {
             position.Y += range * (float)Math.Sin(speed * gameTime.TotalGameTime.TotalSeconds); ;

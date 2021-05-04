@@ -11,11 +11,10 @@ namespace Template
 {
     class Spelare : Bas
     {
-        public Spelare(Texture2D texture, Vector2 position, Point size) : base(texture, position, size)
+        public Spelare(Texture2D texture, Vector2 position, Point size, Rectangle hitbox) : base(texture, position, size, hitbox)
         {
 
         }
-
         public override void Update(GameTime gameTime)
         {
             if (Keyboard.GetState().IsKeyDown(Keys.W))
