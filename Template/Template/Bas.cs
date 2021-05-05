@@ -13,16 +13,23 @@ namespace Template
     {
         private Texture2D _texture;
         protected Vector2 position;
+        protected Rectangle hitbox;
         private Point size;
-        private Rectangle hitbox;
+        public bool IsRemoved = false;
+        public Rectangle Hitbox
+        {
+            get
+            {
+                return new Rectangle((int)Position.X, (int)Position.Y, _texture.Width, _texture.Height);
+            }
+        }
 
         public Vector2 Position { get { return position; } set { position = value; } } //gör så man kan använda private variablar
-        public Bas(Texture2D texture, Vector2 pos, Point size, Rectangle hitbox)
+        public Bas(Texture2D texture, Vector2 pos, Point size)
         {
             _texture = texture;
             position = pos;
             this.size = size;
-            this.hitbox = hitbox;
         }
         public virtual void Update(GameTime gameTime)
         {

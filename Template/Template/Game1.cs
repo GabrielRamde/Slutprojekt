@@ -68,12 +68,12 @@ namespace Template
 
             Texture2D hinderTexture = Content.Load<Texture2D>("hinder");
 
-            spelare = new Spelare(spelareTexture, new Vector2(100, 500), new Point(70, 70),;
+            spelare = new Spelare(spelareTexture, new Vector2(100, 500), new Point(70, 70));
 
-            gameObjects.Add(new Hinder(hinderTexture, new Vector2(450, 50), new Point(100, 100)),;
-            gameObjects.Add(new Hinder(hinderTexture, new Vector2(750, 50), new Point(100, 100)),;
-            gameObjects.Add(new Hinder(hinderTexture, new Vector2(1050, 50), new Point(100, 100)),;
-            gameObjects.Add(new Hinder(hinderTexture, new Vector2(1350, 50), new Point(100, 100)),;
+            gameObjects.Add(new Hinder(hinderTexture, new Vector2(450, 50), new Point(100, 100)));
+            gameObjects.Add(new Hinder(hinderTexture, new Vector2(750, 50), new Point(100, 100)));
+            gameObjects.Add(new Hinder(hinderTexture, new Vector2(1050, 50), new Point(100, 100)));
+            gameObjects.Add(new Hinder(hinderTexture, new Vector2(1350, 50), new Point(100, 100)));
 
             gameObjects.Add(spelare);
 
@@ -89,7 +89,6 @@ namespace Template
 
             hasStarted = false;
         }
-
         /// <summary>
         /// UnloadContent will be called once per game and is the place to unload
         /// game-specific content.
