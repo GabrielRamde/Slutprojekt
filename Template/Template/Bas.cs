@@ -24,14 +24,16 @@ namespace Template
             }
         }
         public Relation relation;
+        protected bool isDrawn = true;
 
         public Vector2 Position { get { return position; } set { position = value; } } //gör så man kan använda private variablar
-        public Bas(Texture2D texture, Vector2 pos, Point size, Relation relation)
+        public Bas(Texture2D texture, Vector2 pos, Point size, Relation relation, bool isDrawn = true)
         {
             _texture = texture;
             position = pos;
             this.size = size;
             this.relation = relation;
+            this.isDrawn = isDrawn;
         }
         public virtual void Update(GameTime gameTime)
         {
@@ -40,7 +42,9 @@ namespace Template
 
         public virtual void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(_texture, new Rectangle(position.ToPoint(), size), Color.White);
+            if(isDrawn){
+                spriteBatch.Draw(_texture, new Rectangle(position.ToPoint(), size), Color.White);
+            }
         }
     }
 

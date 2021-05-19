@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace Template
 {
@@ -20,10 +21,11 @@ namespace Template
         private Texture2D background;
         private Vector2 backgroundpos = new Vector2(0, 0);
 
+        private bool hasStarted = false, timerIsActive, gameIsPaused = false;
+        float timer = 0;
+        private SpriteFont font;
 
         private Spelare spelare;
-
-        private bool hasStarted = false;
 
         private List<Bas> gameObjects = new List<Bas>();
 
@@ -45,8 +47,8 @@ namespace Template
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-
             base.Initialize();
+            timerIsActive = true;
         }
 
         /// <summary>
@@ -63,13 +65,15 @@ namespace Template
 
             Texture2D hinderTexture = Content.Load<Texture2D>("hinder");
 
+            font = Content.Load<SpriteFont>("File"); // Text för nedräkning
+
             spelare = new Spelare(spelareTexture, new Vector2(100, 500), new Point(70, 70));
 
             gameObjects.Add(new Hinder(hinderTexture, new Vector2(450, 50), new Point(100, 100)));
             gameObjects.Add(new Hinder(hinderTexture, new Vector2(750, 50), new Point(100, 100)));
             gameObjects.Add(new Hinder(hinderTexture, new Vector2(1050, 50), new Point(100, 100)));
             gameObjects.Add(new Hinder(hinderTexture, new Vector2(1350, 50), new Point(100, 100)));
-            gameObjects.Add(new Bas(hinderTexture, new Vector2(1635, 440), new Point(270, 200), Relation.win));
+            gameObjects.Add(new Bas(hinderTexture, new Vector2(1635, 440), new Point(270, 200), Relation.win, false));
 
             gameObjects.Add(spelare);
 
@@ -83,7 +87,17 @@ namespace Template
 
 
 
-            hasStarted = false;
+            hasStarted = true;
+            timer = 0;
+            gameIsPaused = false;
+            timerIsActive = true;
+        }
+        private void Win()
+        {
+            timerIsActive = false;
+            gameIsPaused = true;
+            
+
         }
         /// <summary>
         /// UnloadContent will be called once per game and is the place to unload
@@ -102,36 +116,52 @@ namespace Template
         protected override void Update(GameTime gameTime)
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
-                Exit();
-            if (Keyboard.GetState().IsKeyDown(Keys.Enter))
-                hasStarted = true;
-                
-            foreach (Bas item in gameObjects)
             {
-                item.Update(gameTime);
-
-                if(!(item is Spelare))
+                string filepath = Path.Combine(Environment.CurrentDirectory, "file.txt");
+                StreamWriter sw = new StreamWriter(filepath);
+                sw.WriteLine("You Suck");
+                sw.Close();
+                Exit();
+            }
+            if (Keyboard.GetState().IsKeyDown(Keys.Enter))
+            {
+                Restart();
+            }
+    
+            if(!gameIsPaused)
+            {
+                foreach (Bas item in gameObjects)
                 {
-                    if(spelare.Hitbox.Intersects(item.Hitbox))
+                    item.Update(gameTime);
+
+                    if (!(item is Spelare))
                     {
-                        switch (item.relation)
+                        if (spelare.Hitbox.Intersects(item.Hitbox))
                         {
-                            case Relation.none:
-                                break;
-                            case Relation.player:
-                                break;
-                            case Relation.win:
-                               
-                                break;
-                            case Relation.respawn:
-                                Restart();
-                                break;
-                            default:
-                                break;
+                            switch (item.relation)
+                            {
+                                case Relation.none:
+                                    break;
+                                case Relation.player:
+                                    break;
+                                case Relation.win:
+                                    Win();
+                                    break;
+                                case Relation.respawn:
+                                    Restart();
+                                    break;
+                                default:
+                                    break;
+                            }
                         }
                     }
                 }
+                if (timerIsActive)
+                {
+                    timer += (float)gameTime.ElapsedGameTime.TotalSeconds;
+                }
             }
+            
         }
         protected override void Draw(GameTime gameTime)
         {
@@ -146,6 +176,10 @@ namespace Template
             foreach (Bas item in gameObjects)
             {
                 item.Draw(spriteBatch);
+            }
+            if(gameIsPaused)
+            {
+                spriteBatch.DrawString(font, timer.ToString(), new Vector2(950, 540), Color.Black);
             }
 
             spriteBatch.End();

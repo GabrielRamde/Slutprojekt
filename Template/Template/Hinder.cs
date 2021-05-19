@@ -10,7 +10,7 @@ namespace Template
 {
     public class Hinder : Bas
     {
-        float range = 36f;
+        float range = 450f;
         float speed = 5f;
         public Hinder(Texture2D texture, Vector2 position, Point size) : base(texture, position, size, Relation.respawn)
         {
@@ -18,7 +18,8 @@ namespace Template
         }
         public override void Update(GameTime gameTime)
         {
-            position.Y += range * (float)Math.Sin(speed * gameTime.TotalGameTime.TotalSeconds); ;
+            position.Y = range * (float)Math.Sin(speed * gameTime.TotalGameTime.TotalSeconds);
+            position.Y += 480;
             base.Update(gameTime);
         }
     }
