@@ -22,11 +22,6 @@ namespace Template
 
 
         private Spelare spelare;
-        private Texture2D hinder;
-
-        float hinderposspeed = 0f;
-        float range = 36f;
-        float speed = 5f;
 
         private bool hasStarted = false;
 
@@ -74,6 +69,7 @@ namespace Template
             gameObjects.Add(new Hinder(hinderTexture, new Vector2(750, 50), new Point(100, 100)));
             gameObjects.Add(new Hinder(hinderTexture, new Vector2(1050, 50), new Point(100, 100)));
             gameObjects.Add(new Hinder(hinderTexture, new Vector2(1350, 50), new Point(100, 100)));
+            gameObjects.Add(new Bas(hinderTexture, new Vector2(1635, 440), new Point(270, 200), Relation.win));
 
             gameObjects.Add(spelare);
 
@@ -81,11 +77,11 @@ namespace Template
         }
         private void Restart()
         {
-            
 
-            
+            spelare.Reset();
 
-            
+
+
 
             hasStarted = false;
         }
@@ -109,10 +105,32 @@ namespace Template
                 Exit();
             if (Keyboard.GetState().IsKeyDown(Keys.Enter))
                 hasStarted = true;
-
+                
             foreach (Bas item in gameObjects)
             {
                 item.Update(gameTime);
+
+                if(!(item is Spelare))
+                {
+                    if(spelare.Hitbox.Intersects(item.Hitbox))
+                    {
+                        switch (item.relation)
+                        {
+                            case Relation.none:
+                                break;
+                            case Relation.player:
+                                break;
+                            case Relation.win:
+                               
+                                break;
+                            case Relation.respawn:
+                                Restart();
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                }
             }
         }
         protected override void Draw(GameTime gameTime)

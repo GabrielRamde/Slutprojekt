@@ -12,9 +12,10 @@ namespace Template
     public class Spelare : Bas
     {
         public bool HasDied = false;
-        public Spelare(Texture2D texture, Vector2 position, Point size) : base(texture, position, size)
+        private Vector2 startPos;
+        public Spelare(Texture2D texture, Vector2 position, Point size) : base(texture, position, size, Relation.player)
         {
-
+            startPos = position;
         }
         public override void Update(GameTime gameTime)
         {
@@ -34,6 +35,11 @@ namespace Template
             {
                 position.X += 6;
             }
+        }
+
+        public void Reset()
+        {
+            position = startPos;
         }
     }
 }

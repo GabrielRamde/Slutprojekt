@@ -20,24 +20,35 @@ namespace Template
         {
             get
             {
-                return new Rectangle((int)Position.X, (int)Position.Y, _texture.Width, _texture.Height);
+                return new Rectangle((int)Position.X, (int)Position.Y, size.X, size.Y);
             }
         }
+        public Relation relation;
 
         public Vector2 Position { get { return position; } set { position = value; } } //gör så man kan använda private variablar
-        public Bas(Texture2D texture, Vector2 pos, Point size)
+        public Bas(Texture2D texture, Vector2 pos, Point size, Relation relation)
         {
             _texture = texture;
             position = pos;
             this.size = size;
+            this.relation = relation;
         }
         public virtual void Update(GameTime gameTime)
         {
 
         }
+
         public virtual void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(_texture, new Rectangle(position.ToPoint(), size), Color.White);
         }
+    }
+
+    public enum Relation
+    {
+        none,
+        player,
+        win,
+        respawn
     }
 }
